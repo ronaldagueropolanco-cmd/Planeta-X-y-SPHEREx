@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SPHEREx Sky Time Viewer — visor de datos reales del telescopio NASA SPHEREx: 102 bandas infrarrojas, espectros y detección de objetos en movimiento.">
+  <title>SPHEREx Sky Time Viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Icon sprite -->
+<svg class="sprite" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4.5 4.5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/></symbol>
+  <symbol id="i-compare" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></symbol>
+  <symbol id="i-spectrum" viewBox="0 0 24 24"><path d="m3 17 4-5 3 3 4-8 3 4 4-6"/></symbol>
+  <symbol id="i-bands" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-meta" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="8" r=".6" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12"/><path d="m18 6-12 12"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5Z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14"/><path d="M16 5v14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 4v6h6"/><path d="M3.5 10a9 9 0 1 1 .8 7.5"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-agent" viewBox="0 0 24 24"><path d="M12 3.5 13.7 8l4.5 1.7-4.5 1.7L12 16l-1.7-4.6L5.8 9.7 10.3 8 12 3.5Z"/><path d="M18.2 15.2l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9.9-2.1Z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m4 12 16-8-6 16-3-7-7-1Z"/><path d="m11 13 4.5-4.5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.7 6.3.9-4.6 4.4 1.1 6.2-5.5-2.9-5.5 2.9 1.1-6.2L3 9.6l6.3-.9L12 3Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m6 7 1 13h10l1-13"/><path d="M10 11v5M14 11v5"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 4H5v16h5"/><path d="m15 8 4 4-4 4"/><path d="M9 12h10"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5"/><path d="M15 20h5v-5"/><path d="m4 4 6 6"/><path d="m20 20-6-6"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5"/></symbol>
+</svg>
+
+<div class="app" id="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <ellipse cx="16" cy="16" rx="13" ry="5.2" fill="none" stroke="currentColor" stroke-width="1" transform="rotate(-24 16 16)"/>
+        <circle cx="26.5" cy="10.5" r="1.7" fill="currentColor"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">SPHEREx</span>
+        <span class="brand-sub">Sky Time Viewer</span>
+      </div>
+    </div>
+
+    <form class="search" id="search-form" autocomplete="off">
+      <svg class="icon search-icon"><use href="#i-search"/></svg>
+      <input id="search-input" type="text" placeholder="Buscar objeto o RA, Dec…" aria-label="Buscar objeto o coordenadas">
+      <button type="submit" class="search-go">Ir</button>
+    </form>
+
+    <div class="topbar-right">
+      <button class="status-chip" id="status-chip" type="button" title="Estado del archivo IRSA">
+        <span class="status-dot"></span>
+        <span class="status-text">Conectando…</span>
+      </button>
+      <button class="icon-btn" id="btn-about" type="button" title="Acerca de SPHEREx" aria-label="Acerca de SPHEREx">
+        <svg class="icon"><use href="#i-info"/></svg>
+      </button>
+      <button class="account-btn" id="btn-account" type="button" title="Cuenta y sesión" aria-label="Cuenta y sesión">
+        <svg class="icon"><use href="#i-user"/></svg>
+        <span class="account-name" id="account-name">Entrar</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div class="stage-grid" aria-hidden="true"></div>
+
+    <div class="viewport" id="viewport">
+      <div class="image-frame" id="image-frame">
+        <img id="view-image" alt="Campo SPHEREx" draggable="false">
+        <canvas id="overlay" width="1024" height="1024"></canvas>
+      </div>
+    </div>
+
+    <nav class="rail" id="rail" aria-label="Herramientas">
+      <button class="rail-btn" data-panel="search" type="button" title="Buscar campo" aria-label="Buscar campo"><svg class="icon"><use href="#i-search"/></svg></button>
+      <button class="rail-btn" data-panel="layers" type="button" title="Capas" aria-label="Capas"><svg class="icon"><use href="#i-layers"/></svg></button>
+      <button class="rail-btn" data-panel="compare" type="button" title="Comparar épocas" aria-label="Comparar épocas"><svg class="icon"><use href="#i-compare"/></svg></button>
+      <button class="rail-btn" data-panel="spectrum" type="button" title="Espectro" aria-label="Espectro"><svg class="icon"><use href="#i-spectrum"/></svg></button>
+      <button class="rail-btn" data-panel="bands" type="button" title="102 canales" aria-label="102 canales"><svg class="icon"><use href="#i-bands"/></svg></button>
+      <button class="rail-btn" data-panel="meta" type="button" title="Metadatos" aria-label="Metadatos"><svg class="icon"><use href="#i-meta"/></svg></button>
+      <button class="rail-btn" data-panel="assistant" type="button" title="Asistente SPHEREx" aria-label="Asistente SPHEREx"><svg class="icon"><use href="#i-agent"/></svg></button>
+      <button class="rail-btn" id="btn-ai-workspace" type="button" title="Espacio de trabajo IA" aria-label="Espacio de trabajo IA"><svg class="icon"><use href="#i-expand"/></svg></button>
+      <span class="rail-sep"></span>
+      <button class="rail-btn" data-panel="upload" type="button" title="Cargar archivo" aria-label="Cargar archivo"><svg class="icon"><use href="#i-upload"/></svg></button>
+    </nav>
+
+    <aside class="panel" id="panel" hidden aria-live="polite">
+      <div class="panel-head">
+        <h2 class="panel-title" id="panel-title">Panel</h2>
+        <button class="icon-btn panel-close" id="panel-close" type="button" title="Cerrar" aria-label="Cerrar panel"><svg class="icon"><use href="#i-close"/></svg></button>
+      </div>
+      <div class="panel-body" id="panel-body">
+
+        <!-- BUSCAR -->
+        <section class="panel-section" data-panel-content="search">
+          <div class="field">
+            <label for="search-name">Nombre del objeto</label>
+            <input id="search-name" type="text" placeholder="M31, NGC 4567, 3C 273…">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="search-ra">RA (°)</label>
+              <input id="search-ra" type="number" step="any" min="0" max="360" placeholder="276.2639">
+            </div>
+            <div class="field">
+              <label for="search-dec">Dec (°)</label>
+              <input id="search-dec" type="number" step="any" min="-90" max="90" placeholder="64.8240">
+            </div>
+          </div>
+          <div class="field-row three">
+            <div class="field">
+              <label for="search-fov">FOV (°)</label>
+              <input id="search-fov" type="number" step="0.05" min="0.05" max="2" value="0.35">
+            </div>
+            <div class="field">
+              <label for="search-epochs">Épocas</label>
+              <select id="search-epochs">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="search-detectors">Detectores</label>
+              <select id="search-detectors">
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="btn-query" type="button">Consultar archivo</button>
+            <button class="btn primary" id="btn-load" type="button">Cargar datos reales</button>
+          </div>
+          <div class="hint" id="query-hint">Consulta el archivo NASA/IPAC IRSA y descarga recortes level-2 reales.</div>
+          <div id="query-result" class="query-result"></div>
+
+          <div class="section-title spaced">Campos de demostración</div>
+          <div id="demo-list" class="dataset-list"></div>
+        </section>
+
+        <!-- CAPAS -->
+        <section class="panel-section" data-panel-content="layers" hidden>
+          <div class="field">
+            <label for="layer-dataset">Conjunto de datos</label>
+            <select id="layer-dataset"></select>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="layer-cmap">Mapa de color</label>
+              <select id="layer-cmap">
+                <option value="mono">Monocromo</option>
+                <option value="ir">Infrarrojo</option>
+                <option value="inferno">Inferno</option>
+                <option value="ice">Cielo profundo</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="layer-stretch">Estiramiento</label>
+              <select id="layer-stretch">
+                <option value="asinh">Asinh</option>
+                <option value="log">Logarítmico</option>
+                <option value="sqrt">Raíz cuadrada</option>
+                <option value="linear">Lineal</option>
+                <option value="zscale">ZScale</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="layer-detector">Detector</label>
+            <select id="layer-detector"></select>
+          </div>
+
+          <div class="section-title spaced">Coadd de detectores</div>
+          <div id="stack-summary" class="stack-summary"></div>
+
+          <div class="section-title spaced">Campos favoritos</div>
+          <div class="favorite-current">
+            <span class="favorite-current-label" id="favorite-current-label">—</span>
+            <button class="btn small btn-favorite" id="btn-favorite" type="button" title="Guardar el campo abierto en favoritos">
+              <svg class="icon"><use href="#i-star"/></svg>
+              <span id="favorite-btn-label">Guardar</span>
+            </button>
+          </div>
+          <div id="favorite-list" class="favorite-list"></div>
+
+          <div class="section-title spaced">Superposiciones</div>
+          <label class="switch-row">
+            <span>Retícula ecuatorial</span>
+            <span class="switch"><input type="checkbox" id="toggle-grid" checked><span class="knob"></span></span>
+          </label>
+          <label class="switch-row">
+            <span>Marcadores de candidatos</span>
+            <span class="switch"><input type="checkbox" id="toggle-candidates" checked><span class="knob"></span></span>
+          </label>
+          <label class="switch-row">
+            <span>Gaia DR2 <em id="gaia-count"></em></span>
+            <span class="switch"><input type="checkbox" id="toggle-gaia"><span class="knob"></span></span>
+          </label>
+          <label class="switch-row">
+            <span>AllWISE <em id="wise-count"></em></span>
+            <span class="switch"><input type="checkbox" id="toggle-wise"><span class="knob"></span></span>
+          </label>
+
+          <div class="section-title spaced">Vista</div>
+          <div class="segmented" id="view-mode">
+            <button type="button" data-mode="image" class="active">Imagen</button>
+            <button type="button" data-mode="sum">Suma</button>
+            <button type="button" data-mode="diff">Diferencia</button>
+          </div>
+          <div class="field-row" id="diff-controls" hidden>
+            <div class="field">
+              <label for="diff-a">Época A</label>
+              <select id="diff-a"></select>
+            </div>
+            <div class="field">
+              <label for="diff-b">Época B</label>
+              <select id="diff-b"></select>
+            </div>
+          </div>
+          <div class="field" id="diff-scale-wrap" hidden>
+            <label for="diff-scale">Escala de diferencia <span class="mono" id="diff-scale-value">6.0σ</span></label>
+            <input type="range" id="diff-scale" min="2" max="12" step="0.5" value="6">
+          </div>
+        </section>
+
+        <!-- COMPARAR -->
+        <section class="panel-section" data-panel-content="compare" hidden>
+          <div class="field-row">
+            <div class="field">
+              <label for="compare-a">Época A</label>
+              <select id="compare-a"></select>
+            </div>
+            <div class="field">
+              <label for="compare-b">Época B</label>
+              <select id="compare-b"></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="detect-threshold">Umbral (σ)</label>
+              <input id="detect-threshold" type="number" min="2" max="12" step="0.5" value="6">
+            </div>
+            <div class="field field-end">
+              <button class="btn primary" id="btn-detect" type="button">Analizar movimiento</button>
+            </div>
+          </div>
+          <div class="hint">Resta B - A en los canales observados en ambas épocas y busca dipolos, transitorios y variables.</div>
+          <div id="detect-summary" class="detect-summary"></div>
+          <div id="candidate-list" class="candidate-list"></div>
+        </section>
+
+        <!-- ESPECTRO -->
+        <section class="panel-section" data-panel-content="spectrum" hidden>
+          <div class="spectrum-head">
+            <div>
+              <div class="coord-title" id="spectrum-coord">Centro del campo</div>
+              <div class="coord-sub" id="spectrum-sub">Haz clic sobre la imagen para medir otro punto.</div>
+            </div>
+            <button class="icon-btn" id="spectrum-csv" type="button" title="Descargar CSV" aria-label="Descargar CSV"><svg class="icon"><use href="#i-download"/></svg></button>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="spectrum-canvas" width="680" height="420"></canvas>
+            <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+          </div>
+          <div class="spectrum-legend">
+            <span><i class="dot covered"></i> Canal cubierto</span>
+            <span><i class="dot uncovered"></i> Sin datos</span>
+          </div>
+          <div id="spectrum-stats" class="stats-grid"></div>
+          <div class="section-title spaced">Líneas espectrales</div>
+          <div id="feature-list" class="feature-list"></div>
+        </section>
+
+        <!-- BANDAS -->
+        <section class="panel-section" data-panel-content="bands" hidden>
+          <div class="bands-head">
+            <div>
+              <div class="coord-title">102 canales SPHEREx</div>
+              <div class="coord-sub" id="bands-sub">0.75 – 5.00 µm · 6 detectores LVF</div>
+            </div>
+            <button class="btn small" id="btn-band-reset" type="button">Volver a imagen</button>
+          </div>
+          <div class="bands-legend">
+            <span><i class="dot covered"></i> Cubierto</span>
+            <span><i class="dot uncovered"></i> Sin datos en esta época</span>
+          </div>
+          <div id="bands-grid" class="bands-grid"></div>
+          <div class="hint" id="bands-note"></div>
+        </section>
+
+        <!-- METADATOS -->
+        <section class="panel-section" data-panel-content="meta" hidden>
+          <div id="meta-content" class="meta-content"></div>
+        </section>
+
+        <!-- SUBIR -->
+        <section class="panel-section" data-panel-content="upload" hidden>
+          <div class="dropzone" id="dropzone">
+            <svg class="icon drop-icon"><use href="#i-upload"/></svg>
+            <div class="drop-title">Arrastra un FITS o imagen</div>
+            <div class="drop-sub">SPHEREx level-2, FITS 2D, PNG o JPG · máx. 96 MB</div>
+            <input id="upload-file" type="file" accept=".fits,.fit,.fts,.png,.jpg,.jpeg" hidden>
+            <button class="btn small" id="btn-browse" type="button">Elegir archivo</button>
+            <div class="file-name" id="upload-filename"></div>
+          </div>
+          <div class="field">
+            <label for="upload-label">Etiqueta</label>
+            <input id="upload-label" type="text" placeholder="Mi observación">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="upload-ra">RA (°)</label>
+              <input id="upload-ra" type="number" step="any" placeholder="opcional">
+            </div>
+            <div class="field">
+              <label for="upload-dec">Dec (°)</label>
+              <input id="upload-dec" type="number" step="any" placeholder="opcional">
+            </div>
+          </div>
+          <div class="field">
+            <label for="upload-date">Fecha</label>
+            <input id="upload-date" type="date">
+          </div>
+          <button class="btn primary full" id="btn-upload" type="button">Procesar archivo</button>
+          <div class="hint">Los archivos se reproyectan a una cuadrícula norte-arriba de 192 × 192 píxeles.</div>
+        </section>
+
+        <!-- ASISTENTE -->
+        <section class="panel-section assistant-section" data-panel-content="assistant" hidden>
+          <div class="assistant-head">
+            <div>
+              <div class="coord-title">Asistente SPHEREx</div>
+              <div class="coord-sub" id="assistant-mode">Comprobando modo…</div>
+            </div>
+            <div class="assistant-head-actions">
+              <button class="icon-btn" id="assistant-expand" type="button" title="Abrir espacio de trabajo IA" aria-label="Abrir espacio de trabajo IA"><svg class="icon"><use href="#i-expand"/></svg></button>
+              <button class="icon-btn" id="assistant-new" type="button" title="Nueva conversación" aria-label="Nueva conversación"><svg class="icon"><use href="#i-plus"/></svg></button>
+            </div>
+          </div>
+
+          <div class="assistant-gate" id="assistant-gate" hidden>
+            <svg class="icon assistant-gate-icon"><use href="#i-user"/></svg>
+            <div class="assistant-gate-title">Inicia sesión para conversar</div>
+            <div class="assistant-gate-text">El visor es público, pero el asistente guarda tu historial y necesita una cuenta.</div>
+            <button class="btn primary full" id="assistant-login" type="button">Entrar o crear cuenta</button>
+          </div>
+
+          <div id="assistant-main" hidden>
+            <div class="assistant-toolbar">
+              <select id="assistant-conversations" aria-label="Conversaciones guardadas"></select>
+              <button class="icon-btn" id="assistant-delete" type="button" title="Eliminar conversación" aria-label="Eliminar conversación"><svg class="icon"><use href="#i-trash"/></svg></button>
+            </div>
+            <div class="assistant-messages" id="assistant-messages"></div>
+            <div class="assistant-status" id="assistant-status" hidden><span class="tool-dot"></span><span id="assistant-status-text">Consultando…</span></div>
+            <div class="assistant-topics" id="assistant-topics"></div>
+            <form class="assistant-compose" id="assistant-form">
+              <textarea id="assistant-input" rows="2" maxlength="4000" placeholder="Pregunta sobre el campo abierto…"></textarea>
+              <button class="icon-btn assistant-stop" id="assistant-stop" type="button" title="Detener respuesta" aria-label="Detener respuesta" hidden><svg class="icon"><use href="#i-stop"/></svg></button>
+              <button class="btn primary assistant-send" id="assistant-send" type="submit" title="Enviar" aria-label="Enviar"><svg class="icon"><use href="#i-send"/></svg></button>
+            </form>
+            <div class="hint">Enter envía · Shift+Enter salto de línea. El asistente cita los datos del campo abierto.</div>
+          </div>
+        </section>
+
+        <!-- CUENTA -->
+        <section class="panel-section" data-panel-content="account" hidden>
+          <div id="account-guest">
+            <div class="segmented" id="account-tabs">
+              <button type="button" data-auth-tab="login" class="active">Entrar</button>
+              <button type="button" data-auth-tab="register">Crear cuenta</button>
+            </div>
+
+            <form class="auth-form" id="login-form" autocomplete="on">
+              <div class="field">
+                <label for="login-user">Usuario o correo</label>
+                <input id="login-user" type="text" autocomplete="username" placeholder="astro">
+              </div>
+              <div class="field">
+                <label for="login-password">Contraseña</label>
+                <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••">
+              </div>
+              <button class="btn primary full" id="btn-login" type="submit">Entrar</button>
+            </form>
+
+            <form class="auth-form" id="register-form" autocomplete="on" hidden>
+              <div class="field">
+                <label for="register-name">Nombre visible <span class="optional">opcional</span></label>
+                <input id="register-name" type="text" autocomplete="name" maxlength="60" placeholder="Tu nombre">
+              </div>
+              <div class="field">
+                <label for="register-user">Usuario</label>
+                <input id="register-user" type="text" autocomplete="username" maxlength="32" placeholder="3–32 caracteres">
+              </div>
+              <div class="field">
+                <label for="register-email">Correo</label>
+                <input id="register-email" type="email" autocomplete="email" placeholder="tu@correo.com">
+              </div>
+              <div class="field">
+                <label for="register-password">Contraseña</label>
+                <input id="register-password" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres">
+              </div>
+              <button class="btn primary full" id="btn-register" type="submit">Crear cuenta</button>
+            </form>
+
+            <div class="hint" id="auth-hint">Las cuentas guardan historial de chat, campos favoritos y preferencias en una base SQLite local. El visor sigue siendo público.</div>
+          </div>
+
+          <div id="account-profile" hidden>
+            <div class="profile-card">
+              <div class="profile-avatar" id="profile-avatar">A</div>
+              <div class="profile-info">
+                <div class="profile-name" id="profile-name">—</div>
+                <div class="profile-meta" id="profile-meta">—</div>
+                <div class="profile-joined" id="profile-joined"></div>
+              </div>
+            </div>
+            <div class="stats-grid profile-stats" id="profile-stats"></div>
+            <button class="btn full" id="btn-logout" type="button">
+              <svg class="icon"><use href="#i-logout"/></svg>
+              Cerrar sesión
+            </button>
+            <div class="hint">Sesión firmada con caducidad de 30 días. El asistente solo responde cuando has iniciado sesión.</div>
+          </div>
+        </section>
+
+      </div>
+    </aside>
+
+    <div class="timeline" id="timeline">
+      <button class="icon-btn play-btn" id="play-btn" type="button" title="Reproducir épocas" aria-label="Reproducir épocas"><svg class="icon"><use href="#i-play"/></svg></button>
+      <div class="timeline-track" id="timeline-track">
+        <div class="timeline-line"></div>
+        <div class="timeline-ticks" id="timeline-ticks"></div>
+      </div>
+      <div class="timeline-readout" id="timeline-readout">—</div>
+    </div>
+
+    <div class="zoom-controls">
+      <button class="icon-btn" id="zoom-in" type="button" title="Acercar" aria-label="Acercar"><svg class="icon"><use href="#i-plus"/></svg></button>
+      <button class="icon-btn" id="zoom-out" type="button" title="Alejar" aria-label="Alejar"><svg class="icon"><use href="#i-minus"/></svg></button>
+      <button class="icon-btn" id="zoom-reset" type="button" title="Restablecer vista" aria-label="Restablecer vista"><svg class="icon"><use href="#i-reset"/></svg></button>
+    </div>
+
+    <div class="coord-readout" id="coord-readout">
+      <span id="coord-ra">RA —</span>
+      <span class="coord-sep">·</span>
+      <span id="coord-dec">Dec —</span>
+      <span class="coord-sep">·</span>
+      <span id="coord-scale">—</span>
+    </div>
+
+    <!-- ESPACIO DE TRABAJO IA -->
+    <section class="aiw" id="aiw" hidden aria-label="Espacio de trabajo IA">
+      <header class="aiw-head">
+        <div class="aiw-head-title">
+          <svg class="icon aiw-head-icon"><use href="#i-agent"/></svg>
+          <div>
+            <h2>Espacio de trabajo IA</h2>
+            <p id="aiw-mode">Comprobando modo…</p>
+          </div>
+        </div>
+        <div class="aiw-head-actions">
+          <button class="btn small" id="aiw-new-top" data-aiw-new type="button">
+            <svg class="icon"><use href="#i-plus"/></svg>
+            <span>Nueva conversación</span>
+          </button>
+          <button class="icon-btn" id="aiw-close" type="button" title="Cerrar espacio IA" aria-label="Cerrar espacio IA"><svg class="icon"><use href="#i-close"/></svg></button>
+        </div>
+      </header>
+
+      <div class="aiw-gate" id="aiw-gate" hidden>
+        <svg class="icon aiw-gate-icon"><use href="#i-user"/></svg>
+        <h3>Inicia sesión para abrir el espacio IA</h3>
+        <p>El visor es público. La conversación libre, el estudio del desafío y el análisis de imágenes se guardan en tu cuenta.</p>
+        <button class="btn primary" id="aiw-login" type="button">Entrar o crear cuenta</button>
+      </div>
+
+      <div class="aiw-body" id="aiw-body" hidden>
+        <aside class="aiw-side">
+          <div class="aiw-side-head">
+            <span>Conversaciones</span>
+            <button class="icon-btn" id="aiw-new" data-aiw-new type="button" title="Nueva conversación" aria-label="Nueva conversación"><svg class="icon"><use href="#i-plus"/></svg></button>
+          </div>
+          <div class="aiw-conversations" id="aiw-conversations"></div>
+          <div class="aiw-side-note">El historial se guarda en SQLite y solo es visible para tu cuenta.</div>
+        </aside>
+
+        <section class="aiw-main">
+          <div class="aiw-context" id="aiw-context"></div>
+          <div class="aiw-messages" id="aiw-messages"></div>
+          <div class="aiw-status" id="aiw-status" hidden><span class="tool-dot"></span><span id="aiw-status-text">Consultando…</span></div>
+          <div class="aiw-prompts" id="aiw-prompts"></div>
+          <form class="aiw-compose" id="aiw-form">
+            <textarea id="aiw-input" rows="2" maxlength="4000" placeholder="Conversa sobre SPHEREx, el desafío o los cambios entre épocas…"></textarea>
+            <button class="icon-btn aiw-stop" id="aiw-stop" type="button" title="Detener respuesta" aria-label="Detener respuesta" hidden><svg class="icon"><use href="#i-stop"/></svg></button>
+            <button class="btn primary aiw-send" id="aiw-send" type="submit">
+              <svg class="icon"><use href="#i-send"/></svg>
+              <span>Enviar</span>
+            </button>
+          </form>
+          <div class="aiw-hint">Enter envía · Shift+Enter salto de línea · Esc cierra el espacio. El asistente recibe el campo abierto como contexto.</div>
+        </section>
+
+        <aside class="aiw-aside">
+          <section class="aiw-card">
+            <div class="aiw-card-title">Campo abierto</div>
+            <div id="aiw-dataset"></div>
+          </section>
+          <section class="aiw-card">
+            <div class="aiw-card-title">Datos y modelo</div>
+            <div id="aiw-model"></div>
+          </section>
+          <section class="aiw-card">
+            <div class="aiw-card-title">Estudio guiado</div>
+            <div id="aiw-shortcuts"></div>
+          </section>
+          <section class="aiw-card">
+            <div class="aiw-card-title">Herramientas del agente</div>
+            <div id="aiw-tools"></div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="loading" id="loading" hidden>
+    <div class="loading-card">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loading-title" id="loading-title">Procesando</div>
+      <div class="loading-text" id="loading-text">Consultando el archivo…</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
