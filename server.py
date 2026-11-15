@@ -202,7 +202,7 @@ def _frame_meta(dataset: dict) -> list[dict]:
         wave_range = [None, None]
         if wave is not None and np.isfinite(wave).any():
             wave_range = [round(float(np.nanmin(wave)), 4),
-                          round(float(np.nanmax(wave)), 4)]
+                        round(float(np.nanmax(wave)), 4)]
         out.append(
             {
                 "key": key,
